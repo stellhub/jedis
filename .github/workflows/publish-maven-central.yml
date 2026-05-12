@@ -6,6 +6,10 @@ on:
       - published
   workflow_dispatch:
     inputs:
+      publish_ref:
+        description: Branch, tag, or commit SHA to publish. Leave empty to use the selected workflow branch.
+        required: false
+        type: string
       release_version:
         description: Release version to publish, for example 1.0.0
         required: false
@@ -15,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-maven-central-${{ github.event.release.tag_name || github.ref_name || github.run_id }}
+  group: publish-maven-central-${{ inputs.publish_ref || github.event.release.tag_name || github.ref_name || github.run_id }}
   cancel-in-progress: false
 
 jobs:
@@ -25,10 +29,27 @@ jobs:
       CENTRAL_TOKEN_USERNAME: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
       CENTRAL_TOKEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
     steps:
+      - name: Resolve Publish Ref
+        id: publish_ref
+        shell: bash
+        run: |
+          publish_ref="${{ inputs.publish_ref }}"
+
+          if [[ -z "${publish_ref}" && "${{ github.event_name }}" == "release" ]]; then
+            publish_ref="${{ github.event.release.tag_name }}"
+          fi
+
+          if [[ -z "${publish_ref}" ]]; then
+            publish_ref="${{ github.ref }}"
+          fi
+
+          echo "value=${publish_ref}" >> "$GITHUB_OUTPUT"
+
       - name: Checkout Source
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          ref: ${{ steps.publish_ref.outputs.value }}
 
       - name: Validate Publish Secrets
         shell: bash

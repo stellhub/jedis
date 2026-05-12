@@ -9,20 +9,20 @@
 	<packaging>jar</packaging>
 	<groupId>io.github.stellhub</groupId>
 	<artifactId>jedis</artifactId>
-	<version>6.0.0</version>
+	<version>6.0.0-stellhub-otel.1</version>
 	<name>Jedis</name>
 	<description>Jedis is a blazingly small and sane Redis java client.</description>
 	<url>https://github.com/stellhub/jedis</url>
 
-	<mailingLists>
-		<mailingList>
-			<name>Jedis Mailing List</name>
-			<post>jedis_redis@googlegroups.com</post>
-			<archive>
-				https://groups.google.com/group/jedis_redis
-			</archive>
-		</mailingList>
-	</mailingLists>
+	<developers>
+		<developer>
+			<id>stellhub</id>
+			<name>stellhub</name>
+			<email>xiaoyaoyunlian@gmail.com</email>
+			<organization>GitHub</organization>
+			<organizationUrl>https://github.com/stellhub</organizationUrl>
+		</developer>
+	</developers>
 
 	<licenses>
 		<license>
@@ -222,17 +222,6 @@
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
-
-	<distributionManagement>
-		<snapshotRepository>
-			<id>stellhubmaven</id>
-			<url>https://maven.pkg.github.com/stellhub/stellhubmaven</url>
-		</snapshotRepository>
-		<repository>
-			<id>stellhubmaven</id>
-			<url>https://maven.pkg.github.com/stellhub/stellhubmaven</url>
-		</repository>
-	</distributionManagement>
 
 	<build>
 		<resources>
