@@ -103,7 +103,7 @@ jobs:
         run: mvn -B -ntp versions:set -DnewVersion=${{ steps.release_version.outputs.value }} -DgenerateBackupPoms=false
 
       - name: Verify Build
-        run: mvn -B -ntp -DskipTests package
+        run: mvn -B -ntp -DskipTests -Dformatter.skip=true package
 
       - name: Publish Package
-        run: mvn -B -ntp -DskipTests -Prelease clean deploy
+        run: mvn -B -ntp -DskipTests -Dformatter.skip=true -Prelease clean deploy

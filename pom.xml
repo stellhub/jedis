@@ -44,6 +44,7 @@
 	</scm>
 
 	<properties>
+		<maven.compiler.source>25</maven.compiler.source>
 		<github.global.server>github</github.global.server>
 		<jedis.module.name>redis.clients.jedis</jedis.module.name>
 		<slf4j.version>1.7.36</slf4j.version>
@@ -251,28 +252,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven.surefire.version}</version>
-				<configuration>
-					<argLine>${JVM_OPTS}</argLine>
-					<systemPropertyVariables>
-						<redis-hosts>${redis-hosts}</redis-hosts>
-					</systemPropertyVariables>
-					<excludes>
-						<exclude>**/examples/*Example.java</exclude>
-					</excludes>
-					<!--<trimStackTrace>false</trimStackTrace>-->
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>3.3.1</version>
 				<configuration>
@@ -360,16 +339,41 @@
 			<id>release</id>
 			<build>
 				<plugins>
-					<!--Sign the components - this is required by maven central for releases -->
 					<plugin>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.7</version>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.3.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.12.0</version>
 						<configuration>
-							<gpgArguments>
-								<arg>--pinentry-mode</arg>
-								<arg>loopback</arg>
-							</gpgArguments>
+							<source>${maven.compiler.source}</source>
+							<encoding>${project.build.sourceEncoding}</encoding>
+							<doclint>none</doclint>
 						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>3.2.8</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -379,19 +383,25 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>doctests</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>${maven.surefire.version}</version>
 						<configuration>
-							<test>**/examples/*Example.java</test>
+							<bestPractices>true</bestPractices>
+							<keyname>9A870D0CDDB6C964F6467C19D6CC5A07420EBBBE</keyname>
+							<gpgArguments>
+								<arg>--pinentry-mode</arg>
+								<arg>loopback</arg>
+							</gpgArguments>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.central</groupId>
+						<artifactId>central-publishing-maven-plugin</artifactId>
+						<version>0.10.0</version>
+						<extensions>true</extensions>
+						<configuration>
+							<publishingServerId>central</publishingServerId>
+							<deploymentName>${project.artifactId}-${project.version}</deploymentName>
+							<autoPublish>true</autoPublish>
+							<waitUntil>published</waitUntil>
 						</configuration>
 					</plugin>
 				</plugins>
