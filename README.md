@@ -14,6 +14,16 @@ Jedis is a Java client for [Redis](https://github.com/redis/redis "Redis") desig
 
 Are you looking for a high-level library to handle object mapping? See [redis-om-spring](https://github.com/redis/redis-om-spring)!
 
+## Current master branch
+
+The current `master` branch is a secondary development based on Jedis `6.0.0`.
+This branch integrates OpenTelemetry `1.49.0` and follows the Spring Boot `3.5`
+dependency version coordinates specification:
+[Dependency Versions Coordinates](https://docs.spring.io/spring-boot/3.5/appendix/dependency-versions/coordinates.html).
+
+This branch is adapted for the Java framework
+[stellflux](https://github.com/stellhub/stellflux).
+
 ## How do I Redis?
 
 [Learn for free at Redis University](https://university.redis.io/academy/)
